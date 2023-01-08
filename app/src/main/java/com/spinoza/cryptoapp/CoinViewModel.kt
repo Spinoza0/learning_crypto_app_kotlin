@@ -1,14 +1,15 @@
 package com.spinoza.cryptoapp
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.spinoza.cryptoapp.api.ApiFactory
 import com.spinoza.cryptoapp.database.AppDataBase
 import com.spinoza.cryptoapp.pojo.CoinPriceInfo
 import com.spinoza.cryptoapp.pojo.CoinPriceInfoRawData
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit
 class CoinViewModel(application: Application) : AndroidViewModel(application) {
     private val db = AppDataBase.getInstance(application)
     private val compositeDisposable = CompositeDisposable()
+    private val error = MutableLiveData<String>()
 
     val priceList = db.coinPriceInfoDao().getPriceList()
 
@@ -25,6 +27,8 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getDetailInfo(fSym: String): LiveData<CoinPriceInfo> =
         db.coinPriceInfoDao().getPriceInfoAboutCoin(fSym)
+
+    fun isError(): LiveData<String> = error
 
     private fun loadData() {
         val disposable = ApiFactory.apiService.getTopCoinsInfo()
@@ -40,11 +44,11 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
             .repeat()
             .retry()
             .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 db.coinPriceInfoDao().insertPriceList(it)
             }, {
-                Log.e("TEST_OF_LOADING_DATA", "Failure: $it.message")
+                error.value = "Failure: $it.message"
             })
         compositeDisposable.add(disposable)
     }

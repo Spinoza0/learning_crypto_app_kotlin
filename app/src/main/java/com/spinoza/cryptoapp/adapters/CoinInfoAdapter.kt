@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso
 class CoinInfoAdapter(private val context: Context) :
     RecyclerView.Adapter<CoinInfoAdapter.CoinInfoViewHolder>() {
 
-    var onCoinClickListener: OnCoinClickListener? = null
+    var onCoinClickListener: ((CoinPriceInfo) -> Unit)? = null
 
     var coinPriceInfoList: List<CoinPriceInfo> = listOf()
         set(value) {
@@ -48,7 +48,7 @@ class CoinInfoAdapter(private val context: Context) :
                     getFormattedTime()
                 )
                 Picasso.get().load(getFullImageUrl()).into(imageViewLogoCoin)
-                itemView.setOnClickListener { onCoinClickListener?.onCoinClick(this) }
+                itemView.setOnClickListener { onCoinClickListener?.invoke(this) }
             }
         }
     }
@@ -60,9 +60,5 @@ class CoinInfoAdapter(private val context: Context) :
         val textViewSymbols: TextView = itemView.findViewById(R.id.textViewSymbols)
         val textViewPrice: TextView = itemView.findViewById(R.id.textViewPrice)
         val textViewLastUpdate: TextView = itemView.findViewById(R.id.textViewLastUpdate)
-    }
-
-    interface OnCoinClickListener {
-        fun onCoinClick(coinPriceInfo: CoinPriceInfo)
     }
 }
