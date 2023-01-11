@@ -1,11 +1,10 @@
-package com.spinoza.cryptoapp.pojo
+package com.spinoza.cryptoapp.domain.pojo
 
-import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.spinoza.cryptoapp.api.ApiFactory.BASE_IMAGE_URL
+import com.spinoza.cryptoapp.data.ApiFactory.BASE_IMAGE_URL
 import com.spinoza.cryptoapp.utils.convertTimeStampToTime
 
 @Entity(tableName = "full_price_list")
@@ -21,7 +20,6 @@ data class CoinPriceInfo(
     @PrimaryKey
     @SerializedName("FROMSYMBOL")
     @Expose
-    @NonNull
     val fromSymbol: String,
 
     @SerializedName("TOSYMBOL")

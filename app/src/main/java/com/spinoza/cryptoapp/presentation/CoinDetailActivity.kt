@@ -1,11 +1,15 @@
-package com.spinoza.cryptoapp
+package com.spinoza.cryptoapp.presentation
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.spinoza.cryptoapp.data.ApiFactory
+import com.spinoza.cryptoapp.data.AppDataBase
 import com.spinoza.cryptoapp.databinding.ActivityCoinDetailBinding
+import com.spinoza.cryptoapp.presentation.model.CoinViewModel
+import com.spinoza.cryptoapp.presentation.model.CoinViewModelFactory
 import com.squareup.picasso.Picasso
 
 class CoinDetailActivity : AppCompatActivity() {
@@ -20,7 +24,12 @@ class CoinDetailActivity : AppCompatActivity() {
         if (!intent.hasExtra(EXTRA_FROM_SYMBOL)) {
             finish()
         } else {
-            viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
+            viewModel = ViewModelProvider(this,
+                CoinViewModelFactory(
+                    AppDataBase.getInstance(application).coinPriceInfoDao(),
+                    ApiFactory.apiService
+                )
+            )[CoinViewModel::class.java]
             intent.getStringExtra(EXTRA_FROM_SYMBOL)?.let {
                 viewModel.getDetailInfo(it).observe(this) { coin ->
                     binding.textViewFromSymbol.text = coin.fromSymbol

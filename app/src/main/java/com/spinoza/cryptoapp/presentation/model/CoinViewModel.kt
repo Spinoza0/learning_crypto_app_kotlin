@@ -1,55 +1,55 @@
-package com.spinoza.cryptoapp
+package com.spinoza.cryptoapp.presentation.model
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
-import com.spinoza.cryptoapp.api.ApiFactory
-import com.spinoza.cryptoapp.database.AppDataBase
-import com.spinoza.cryptoapp.pojo.CoinPriceInfo
-import com.spinoza.cryptoapp.pojo.CoinPriceInfoRawData
+import com.spinoza.cryptoapp.domain.ApiService
+import com.spinoza.cryptoapp.domain.CoinPriceInfoDao
+import com.spinoza.cryptoapp.domain.pojo.CoinPriceInfo
+import com.spinoza.cryptoapp.domain.pojo.CoinPriceInfoRawData
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
-class CoinViewModel(application: Application) : AndroidViewModel(application) {
-    private val db = AppDataBase.getInstance(application)
+class CoinViewModel(
+    private val coinPriceInfoDao: CoinPriceInfoDao,
+    private val apiService: ApiService,
+) :
+    ViewModel() {
     private val compositeDisposable = CompositeDisposable()
-    private val error = MutableLiveData<String>()
+    val priceList = coinPriceInfoDao.getPriceList()
 
-    val priceList = db.coinPriceInfoDao().getPriceList()
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String>
+        get() = _error
+
 
     init {
         loadData()
     }
 
     fun getDetailInfo(fSym: String): LiveData<CoinPriceInfo> =
-        db.coinPriceInfoDao().getPriceInfoAboutCoin(fSym)
-
-    fun isError(): LiveData<String> = error
+        coinPriceInfoDao.getPriceInfoAboutCoin(fSym)
 
     private fun loadData() {
-        val disposable = ApiFactory.apiService.getTopCoinsInfo()
+        val disposable = apiService.getTopCoinsInfo()
             .map { coinInfoListData ->
                 coinInfoListData.data
                     ?.map { it.coinInfo?.name }
                     ?.joinToString(",")
                     .toString()
             }
-            .flatMap { ApiFactory.apiService.getFullPriceList(fSyms = it) }
+            .flatMap { apiService.getFullPriceList(fSyms = it) }
             .map { getPriceListFromRawData(it) }
             .delaySubscription(15, TimeUnit.SECONDS)
             .repeat()
             .retry()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                db.coinPriceInfoDao().insertPriceList(it)
-            }, {
-                error.value = "Failure: $it.message"
-            })
+            .subscribe({ coinPriceInfoDao.insertPriceList(it) },
+                { _error.value = "Failure: $it.message" })
         compositeDisposable.add(disposable)
     }
 

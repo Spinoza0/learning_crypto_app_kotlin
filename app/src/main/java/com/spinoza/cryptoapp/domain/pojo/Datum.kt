@@ -1,4 +1,4 @@
-package com.spinoza.cryptoapp.pojo
+package com.spinoza.cryptoapp.domain.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

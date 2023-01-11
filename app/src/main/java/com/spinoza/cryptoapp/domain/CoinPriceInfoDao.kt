@@ -1,11 +1,11 @@
-package com.spinoza.cryptoapp.database
+package com.spinoza.cryptoapp.domain
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.spinoza.cryptoapp.pojo.CoinPriceInfo
+import com.spinoza.cryptoapp.domain.pojo.CoinPriceInfo
 
 @Dao
 interface CoinPriceInfoDao {
