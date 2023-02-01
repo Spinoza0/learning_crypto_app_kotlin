@@ -43,7 +43,7 @@ class CoinViewModel(
             }
             .flatMap { apiService.getFullPriceList(fSyms = it) }
             .map { getPriceListFromRawData(it) }
-            .delaySubscription(15, TimeUnit.SECONDS)
+            .delaySubscription(UPDATE_INTERVAL, TimeUnit.SECONDS)
             .repeat()
             .retry()
             .subscribeOn(Schedulers.io())
@@ -76,5 +76,9 @@ class CoinViewModel(
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
+    }
+
+    companion object {
+        private const val UPDATE_INTERVAL = 10L
     }
 }
