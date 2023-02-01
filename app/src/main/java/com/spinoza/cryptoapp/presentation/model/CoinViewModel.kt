@@ -5,21 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import com.spinoza.cryptoapp.data.network.ApiService
-import com.spinoza.cryptoapp.data.database.CoinPriceInfoDao
-import com.spinoza.cryptoapp.data.model.CoinPriceInfo
-import com.spinoza.cryptoapp.data.model.CoinPriceInfoRawData
+import com.spinoza.cryptoapp.data.database.CoinInfoDao
+import com.spinoza.cryptoapp.data.network.model.CoinInfoDto
+import com.spinoza.cryptoapp.data.network.model.CoinInfoJsonContainerDto
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 class CoinViewModel(
-    private val coinPriceInfoDao: CoinPriceInfoDao,
+    private val coinInfoDao: CoinInfoDao,
     private val apiService: ApiService,
 ) :
     ViewModel() {
     private val compositeDisposable = CompositeDisposable()
-    val priceList = coinPriceInfoDao.getPriceList()
+    val priceList = coinInfoDao.getPriceList()
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String>
@@ -30,14 +30,14 @@ class CoinViewModel(
         loadData()
     }
 
-    fun getDetailInfo(fSym: String): LiveData<CoinPriceInfo> =
-        coinPriceInfoDao.getPriceInfoAboutCoin(fSym)
+    fun getDetailInfo(fSym: String): LiveData<CoinInfoDto> =
+        coinInfoDao.getPriceInfoAboutCoin(fSym)
 
     private fun loadData() {
         val disposable = apiService.getTopCoinsInfo()
             .map { coinInfoListData ->
-                coinInfoListData.data
-                    ?.map { it.coinInfo?.name }
+                coinInfoListData.names
+                    ?.map { it.coinName?.name }
                     ?.joinToString(",")
                     .toString()
             }
@@ -48,23 +48,23 @@ class CoinViewModel(
             .retry()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ coinPriceInfoDao.insertPriceList(it) },
+            .subscribe({ coinInfoDao.insertPriceList(it) },
                 { _error.value = "Failure: $it.message" })
         compositeDisposable.add(disposable)
     }
 
     private fun getPriceListFromRawData(
-        coinPriceInfoRawData: CoinPriceInfoRawData,
-    ): List<CoinPriceInfo> {
-        val jsonObject = coinPriceInfoRawData.coinPriceInfoJsonObject
-        val coinPriceInfoList = ArrayList<CoinPriceInfo>()
+        coinInfoJsonContainer: CoinInfoJsonContainerDto,
+    ): List<CoinInfoDto> {
+        val jsonObject = coinInfoJsonContainer.json
+        val coinPriceInfoList = ArrayList<CoinInfoDto>()
         jsonObject?.let { jsonObjectNonNull ->
             jsonObjectNonNull.keySet().forEach { coinKey ->
                 val currencyJson = jsonObjectNonNull.getAsJsonObject(coinKey)
                 currencyJson.keySet().forEach { currencyKey ->
                     val coinPriceInfo = Gson().fromJson(
                         currencyJson.getAsJsonObject(currencyKey),
-                        CoinPriceInfo::class.java
+                        CoinInfoDto::class.java
                     )
                     coinPriceInfoList.add(coinPriceInfo)
                 }

@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.spinoza.cryptoapp.R
-import com.spinoza.cryptoapp.data.model.CoinPriceInfo
+import com.spinoza.cryptoapp.data.network.model.CoinInfoDto
 import com.squareup.picasso.Picasso
 
 
 class CoinInfoAdapter(private val context: Context) :
-    ListAdapter<CoinPriceInfo, CoinInfoViewHolder>(CoinPriceInfoDiffCallback()) {
+    ListAdapter<CoinInfoDto, CoinInfoViewHolder>(CoinPriceInfoDiffCallback()) {
 
-    var onCoinClickListener: ((CoinPriceInfo) -> Unit)? = null
+    var onCoinClickListener: ((CoinInfoDto) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinInfoViewHolder {
         val view = LayoutInflater
