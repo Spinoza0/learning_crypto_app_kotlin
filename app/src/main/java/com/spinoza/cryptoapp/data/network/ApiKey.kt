@@ -1,4 +1,4 @@
-package com.spinoza.cryptoapp.domain
+package com.spinoza.cryptoapp.data.network
 
 class ApiKey {
     companion object {

@@ -1,6 +1,5 @@
-package com.spinoza.cryptoapp.data
+package com.spinoza.cryptoapp.data.network
 
-import com.spinoza.cryptoapp.domain.ApiService
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

@@ -1,7 +1,7 @@
-package com.spinoza.cryptoapp.domain
+package com.spinoza.cryptoapp.data.network
 
-import com.spinoza.cryptoapp.domain.pojo.CoinInfoListOfData
-import com.spinoza.cryptoapp.domain.pojo.CoinPriceInfoRawData
+import com.spinoza.cryptoapp.data.model.CoinInfoListOfData
+import com.spinoza.cryptoapp.data.model.CoinPriceInfoRawData
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
 import retrofit2.http.Query

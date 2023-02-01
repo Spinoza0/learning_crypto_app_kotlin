@@ -1,11 +1,10 @@
-package com.spinoza.cryptoapp.data
+package com.spinoza.cryptoapp.data.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.spinoza.cryptoapp.domain.CoinPriceInfoDao
-import com.spinoza.cryptoapp.domain.pojo.CoinPriceInfo
+import com.spinoza.cryptoapp.data.model.CoinPriceInfo
 
 @Database(entities = [CoinPriceInfo::class], version = 1, exportSchema = false)
 abstract class AppDataBase : RoomDatabase() {

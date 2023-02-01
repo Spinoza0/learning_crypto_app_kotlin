@@ -5,8 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.spinoza.cryptoapp.data.ApiFactory
-import com.spinoza.cryptoapp.data.AppDataBase
+import com.spinoza.cryptoapp.data.network.ApiFactory
+import com.spinoza.cryptoapp.data.database.AppDataBase
 import com.spinoza.cryptoapp.databinding.ActivityCoinDetailBinding
 import com.spinoza.cryptoapp.presentation.model.CoinViewModel
 import com.spinoza.cryptoapp.presentation.model.CoinViewModelFactory

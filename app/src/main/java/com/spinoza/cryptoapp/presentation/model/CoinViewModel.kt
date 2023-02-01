@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
-import com.spinoza.cryptoapp.domain.ApiService
-import com.spinoza.cryptoapp.domain.CoinPriceInfoDao
-import com.spinoza.cryptoapp.domain.pojo.CoinPriceInfo
-import com.spinoza.cryptoapp.domain.pojo.CoinPriceInfoRawData
+import com.spinoza.cryptoapp.data.network.ApiService
+import com.spinoza.cryptoapp.data.database.CoinPriceInfoDao
+import com.spinoza.cryptoapp.data.model.CoinPriceInfo
+import com.spinoza.cryptoapp.data.model.CoinPriceInfoRawData
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.schedulers.Schedulers

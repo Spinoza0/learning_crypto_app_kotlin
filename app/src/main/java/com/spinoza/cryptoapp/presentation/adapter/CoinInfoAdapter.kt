@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.spinoza.cryptoapp.R
-import com.spinoza.cryptoapp.domain.pojo.CoinPriceInfo
+import com.spinoza.cryptoapp.data.model.CoinPriceInfo
 import com.squareup.picasso.Picasso
 
 

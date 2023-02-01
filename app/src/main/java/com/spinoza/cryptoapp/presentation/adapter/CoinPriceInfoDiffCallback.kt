@@ -1,7 +1,7 @@
 package com.spinoza.cryptoapp.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.spinoza.cryptoapp.domain.pojo.CoinPriceInfo
+import com.spinoza.cryptoapp.data.model.CoinPriceInfo
 
 class CoinPriceInfoDiffCallback(
 ) : DiffUtil.ItemCallback<CoinPriceInfo>() {
