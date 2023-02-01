@@ -5,14 +5,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.spinoza.cryptoapp.R
-import com.spinoza.cryptoapp.data.network.model.CoinInfoDto
+import com.spinoza.cryptoapp.data.network.ApiFactory.BASE_IMAGE_URL
+import com.spinoza.cryptoapp.domain.CoinInfo
+import com.spinoza.cryptoapp.utils.convertTimeStampToTime
 import com.squareup.picasso.Picasso
 
 
 class CoinInfoAdapter(private val context: Context) :
-    ListAdapter<CoinInfoDto, CoinInfoViewHolder>(CoinPriceInfoDiffCallback()) {
+    ListAdapter<CoinInfo, CoinInfoViewHolder>(CoinPriceInfoDiffCallback()) {
 
-    var onCoinClickListener: ((CoinInfoDto) -> Unit)? = null
+    var onCoinClickListener: ((CoinInfo) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinInfoViewHolder {
         val view = LayoutInflater
@@ -32,9 +34,10 @@ class CoinInfoAdapter(private val context: Context) :
                 textViewPrice.text = price.toString()
                 textViewLastUpdate.text = String.format(
                     context.getString(R.string.last_update_template),
-                    getFormattedTime()
+                    convertTimeStampToTime(lastUpdate)
                 )
-                Picasso.get().load(getFullImageUrl()).into(imageViewLogoCoin)
+                Picasso.get().load("$BASE_IMAGE_URL$imageUrl")
+                    .into(imageViewLogoCoin)
                 itemView.setOnClickListener { onCoinClickListener?.invoke(this) }
             }
         }

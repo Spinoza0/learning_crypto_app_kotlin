@@ -11,7 +11,7 @@ import com.spinoza.cryptoapp.domain.CoinRepository
 import kotlinx.coroutines.delay
 
 class CoinRepositoryImpl(application: Application) : CoinRepository {
-    private val coinInfoDao = AppDataBase.getInstance(application).coinPriceInfoDao()
+    private val coinInfoDao = AppDataBase.getInstance(application).coinInfoDao()
     private val apiService = ApiFactory.apiService
 
     private val mapper = CoinMapper()
@@ -30,14 +30,17 @@ class CoinRepositoryImpl(application: Application) : CoinRepository {
 
     override suspend fun loadData() {
         while (true) {
-            val topCoins = apiService.getTopCoinsInfo(limit = COINS_LIST_LIMIT)
-            val fromSymbols = mapper.mapNamesListToString(topCoins)
-            val jsonContainerDto = apiService.getFullPriceList(fSyms = fromSymbols)
-            val coinInfoDtoList = mapper.mapJsonContainerToListCoinInfo(jsonContainerDto)
-            val dbModelList = coinInfoDtoList.map {
-                mapper.mapDtoToDbModel(it)
+            try {
+                val topCoins = apiService.getTopCoinsInfo(limit = COINS_LIST_LIMIT)
+                val fromSymbols = mapper.mapNamesListToString(topCoins)
+                val jsonContainerDto = apiService.getFullPriceList(fSyms = fromSymbols)
+                val coinInfoDtoList = mapper.mapJsonContainerToListCoinInfo(jsonContainerDto)
+                val dbModelList = coinInfoDtoList.map {
+                    mapper.mapDtoToDbModel(it)
+                }
+                coinInfoDao.insertPriceList(dbModelList)
+            } catch (e: Exception) {
             }
-            coinInfoDao.insertPriceList(dbModelList)
             delay(UPDATE_INTERVAL_MILLIS)
         }
     }
