@@ -3,12 +3,10 @@ package com.spinoza.cryptoapp.presentation.model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.spinoza.cryptoapp.domain.CoinRepository
 import com.spinoza.cryptoapp.domain.usecases.GetCoinInfoListUseCase
 import com.spinoza.cryptoapp.domain.usecases.GetCoinInfoUseCase
 import com.spinoza.cryptoapp.domain.usecases.LoadDataUseCase
-import kotlinx.coroutines.launch
 
 class CoinViewModel(repository: CoinRepository) : ViewModel() {
     private val getCoinInfoListUseCase = GetCoinInfoListUseCase(repository)
@@ -22,9 +20,7 @@ class CoinViewModel(repository: CoinRepository) : ViewModel() {
         get() = _error
 
     init {
-        viewModelScope.launch {
-            loadDataUseCase()
-        }
+        loadDataUseCase()
     }
 
     fun getDetailInfo(fSym: String) = getCoinInfoUseCase(fSym)
