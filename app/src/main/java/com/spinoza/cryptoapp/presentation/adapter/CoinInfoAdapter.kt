@@ -5,9 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.spinoza.cryptoapp.R
-import com.spinoza.cryptoapp.data.network.ApiFactory.BASE_IMAGE_URL
 import com.spinoza.cryptoapp.domain.CoinInfo
-import com.spinoza.cryptoapp.utils.convertTimeStampToTime
 import com.squareup.picasso.Picasso
 
 
@@ -34,10 +32,9 @@ class CoinInfoAdapter(private val context: Context) :
                 textViewPrice.text = price.toString()
                 textViewLastUpdate.text = String.format(
                     context.getString(R.string.last_update_template),
-                    convertTimeStampToTime(lastUpdate)
+                    lastUpdate
                 )
-                Picasso.get().load("$BASE_IMAGE_URL$imageUrl")
-                    .into(imageViewLogoCoin)
+                Picasso.get().load(imageUrl).into(imageViewLogoCoin)
                 itemView.setOnClickListener { onCoinClickListener?.invoke(this) }
             }
         }

@@ -5,12 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.spinoza.cryptoapp.data.network.ApiFactory.BASE_IMAGE_URL
 import com.spinoza.cryptoapp.data.repository.CoinRepositoryImpl
 import com.spinoza.cryptoapp.databinding.ActivityCoinDetailBinding
 import com.spinoza.cryptoapp.presentation.model.CoinViewModel
 import com.spinoza.cryptoapp.presentation.model.CoinViewModelFactory
-import com.spinoza.cryptoapp.utils.convertTimeStampToTime
 import com.squareup.picasso.Picasso
 
 class CoinDetailActivity : AppCompatActivity() {
@@ -38,9 +36,8 @@ class CoinDetailActivity : AppCompatActivity() {
                     binding.textViewMinPrice.text = coin.lowDay
                     binding.textViewMaxPrice.text = coin.highDay
                     binding.textViewLastMarket.text = coin.lastMarket
-                    binding.textViewLastUpdate.text = convertTimeStampToTime(coin.lastUpdate)
-                    Picasso.get().load("${BASE_IMAGE_URL}${coin.imageUrl}")
-                        .into(binding.imageViewLogoCoin)
+                    binding.textViewLastUpdate.text = coin.lastUpdate
+                    Picasso.get().load(coin.imageUrl).into(binding.imageViewLogoCoin)
                 }
             }
         }

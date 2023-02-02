@@ -6,6 +6,9 @@ import com.spinoza.cryptoapp.data.network.model.CoinInfoDto
 import com.spinoza.cryptoapp.data.network.model.CoinInfoJsonContainerDto
 import com.spinoza.cryptoapp.data.network.model.CoinNamesListDto
 import com.spinoza.cryptoapp.domain.CoinInfo
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CoinMapper {
     fun mapDtoToDbModel(dto: CoinInfoDto): CoinInfoDbModel = CoinInfoDbModel(
@@ -16,7 +19,7 @@ class CoinMapper {
         highDay = dto.highDay,
         lowDay = dto.lowDay,
         lastMarket = dto.lastMarket,
-        imageUrl = dto.imageUrl
+        imageUrl = BASE_IMAGE_URL + dto.imageUrl
     )
 
     fun mapJsonContainerToListCoinInfo(jsonContainer: CoinInfoJsonContainerDto): List<CoinInfoDto> {
@@ -41,14 +44,28 @@ class CoinMapper {
         return namesListDto.names?.map { it.coinName?.name }?.joinToString(",") ?: ""
     }
 
-    fun mapDbModelToEntity(dbModel: CoinInfoDbModel):CoinInfo = CoinInfo(
+    fun mapDbModelToEntity(dbModel: CoinInfoDbModel): CoinInfo = CoinInfo(
         fromSymbol = dbModel.fromSymbol,
         toSymbol = dbModel.toSymbol,
         price = dbModel.price,
-        lastUpdate = dbModel.lastUpdate,
+        lastUpdate = convertTimeStampToTime(dbModel.lastUpdate),
         highDay = dbModel.highDay,
         lowDay = dbModel.lowDay,
         lastMarket = dbModel.lastMarket,
         imageUrl = dbModel.imageUrl
     )
+
+    private fun convertTimeStampToTime(timeStamp: Long?): String {
+        val simpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+        simpleDateFormat.timeZone = TimeZone.getDefault()
+        var result = ""
+        timeStamp?.let {
+            result = simpleDateFormat.format(Date(Timestamp(timeStamp * 1000).time))
+        }
+        return result
+    }
+
+    companion object {
+        const val BASE_IMAGE_URL = "https://cryptocompare.com"
+    }
 }
