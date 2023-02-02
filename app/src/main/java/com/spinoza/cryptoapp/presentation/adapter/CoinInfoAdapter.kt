@@ -5,24 +5,27 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.spinoza.cryptoapp.R
-import com.spinoza.cryptoapp.domain.pojo.CoinPriceInfo
+import com.spinoza.cryptoapp.databinding.ItemCoinInfoBinding
+import com.spinoza.cryptoapp.domain.CoinInfo
 import com.squareup.picasso.Picasso
 
 
 class CoinInfoAdapter(private val context: Context) :
-    ListAdapter<CoinPriceInfo, CoinInfoViewHolder>(CoinPriceInfoDiffCallback()) {
+    ListAdapter<CoinInfo, CoinInfoViewHolder>(CoinPriceInfoDiffCallback()) {
 
-    var onCoinClickListener: ((CoinPriceInfo) -> Unit)? = null
+    var onCoinClickListener: ((CoinInfo) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinInfoViewHolder {
-        val view = LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.item_coin_info, parent, false)
-        return CoinInfoViewHolder(view)
+        val binding = ItemCoinInfoBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return CoinInfoViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: CoinInfoViewHolder, position: Int) {
-        with(holder) {
+        with(holder.binding) {
             with(getItem(position)) {
                 textViewSymbols.text = String.format(
                     context.getString(R.string.symbols_template),
@@ -32,10 +35,10 @@ class CoinInfoAdapter(private val context: Context) :
                 textViewPrice.text = price.toString()
                 textViewLastUpdate.text = String.format(
                     context.getString(R.string.last_update_template),
-                    getFormattedTime()
+                    lastUpdate
                 )
-                Picasso.get().load(getFullImageUrl()).into(imageViewLogoCoin)
-                itemView.setOnClickListener { onCoinClickListener?.invoke(this) }
+                Picasso.get().load(imageUrl).into(imageViewLogoCoin)
+                root.setOnClickListener { onCoinClickListener?.invoke(this) }
             }
         }
     }

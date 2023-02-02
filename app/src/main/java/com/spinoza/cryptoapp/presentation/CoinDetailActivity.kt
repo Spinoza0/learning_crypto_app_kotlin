@@ -5,8 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.spinoza.cryptoapp.data.ApiFactory
-import com.spinoza.cryptoapp.data.AppDataBase
+import com.spinoza.cryptoapp.data.repository.CoinRepositoryImpl
 import com.spinoza.cryptoapp.databinding.ActivityCoinDetailBinding
 import com.spinoza.cryptoapp.presentation.model.CoinViewModel
 import com.spinoza.cryptoapp.presentation.model.CoinViewModelFactory
@@ -24,22 +23,21 @@ class CoinDetailActivity : AppCompatActivity() {
         if (!intent.hasExtra(EXTRA_FROM_SYMBOL)) {
             finish()
         } else {
-            viewModel = ViewModelProvider(this,
-                CoinViewModelFactory(
-                    AppDataBase.getInstance(application).coinPriceInfoDao(),
-                    ApiFactory.apiService
-                )
+            viewModel = ViewModelProvider(
+                this,
+                CoinViewModelFactory(CoinRepositoryImpl(application))
             )[CoinViewModel::class.java]
+
             intent.getStringExtra(EXTRA_FROM_SYMBOL)?.let {
                 viewModel.getDetailInfo(it).observe(this) { coin ->
                     binding.textViewFromSymbol.text = coin.fromSymbol
                     binding.textViewToSymbol.text = coin.toSymbol
-                    binding.textViewPrice.text = coin.price.toString()
-                    binding.textViewMinPrice.text = coin.lowDay.toString()
-                    binding.textViewMaxPrice.text = coin.highDay.toString()
+                    binding.textViewPrice.text = coin.price
+                    binding.textViewMinPrice.text = coin.lowDay
+                    binding.textViewMaxPrice.text = coin.highDay
                     binding.textViewLastMarket.text = coin.lastMarket
-                    binding.textViewLastUpdate.text = coin.getFormattedTime()
-                    Picasso.get().load(coin.getFullImageUrl()).into(binding.imageViewLogoCoin)
+                    binding.textViewLastUpdate.text = coin.lastUpdate
+                    Picasso.get().load(coin.imageUrl).into(binding.imageViewLogoCoin)
                 }
             }
         }

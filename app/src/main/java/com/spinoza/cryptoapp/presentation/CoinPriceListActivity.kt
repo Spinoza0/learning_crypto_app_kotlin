@@ -4,8 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.spinoza.cryptoapp.data.ApiFactory
-import com.spinoza.cryptoapp.data.AppDataBase
+import com.spinoza.cryptoapp.data.repository.CoinRepositoryImpl
 import com.spinoza.cryptoapp.databinding.ActivityCoinPriceListBinding
 import com.spinoza.cryptoapp.presentation.adapter.CoinInfoAdapter
 import com.spinoza.cryptoapp.presentation.model.CoinViewModel
@@ -31,14 +30,12 @@ class CoinPriceListActivity : AppCompatActivity() {
 
         binding.recyclerViewCoinPriceList.adapter = adapter
 
-        viewModel = ViewModelProvider(this,
-            CoinViewModelFactory(
-                AppDataBase.getInstance(application).coinPriceInfoDao(),
-                ApiFactory.apiService
-            )
+        viewModel = ViewModelProvider(
+            this,
+            CoinViewModelFactory(CoinRepositoryImpl(application))
         )[CoinViewModel::class.java]
 
-        viewModel.priceList.observe(this) { adapter.submitList(it) }
+        viewModel.coinInfoList.observe(this) { adapter.submitList(it) }
         viewModel.error.observe(this) {
             Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         }
