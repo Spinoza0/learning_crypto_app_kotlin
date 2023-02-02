@@ -1,14 +1,7 @@
 package com.spinoza.cryptoapp.presentation.adapter
 
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.spinoza.cryptoapp.R
+import com.spinoza.cryptoapp.databinding.ItemCoinInfoBinding
 
-class CoinInfoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val imageViewLogoCoin: ImageView = itemView.findViewById(R.id.imageViewLogoCoin)
-    val textViewSymbols: TextView = itemView.findViewById(R.id.textViewSymbols)
-    val textViewPrice: TextView = itemView.findViewById(R.id.textViewPrice)
-    val textViewLastUpdate: TextView = itemView.findViewById(R.id.textViewLastUpdate)
-}
+class CoinInfoViewHolder(val binding: ItemCoinInfoBinding) :
+    RecyclerView.ViewHolder(binding.root)
