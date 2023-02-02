@@ -1,11 +1,8 @@
 package com.spinoza.cryptoapp.data.network.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "full_price_list")
 data class CoinInfoDto(
     @SerializedName("TYPE")
     @Expose
@@ -13,7 +10,6 @@ data class CoinInfoDto(
     @SerializedName("MARKET")
     @Expose
     val market: String?,
-    @PrimaryKey
     @SerializedName("FROMSYMBOL")
     @Expose
     val fromSymbol: String,
@@ -124,5 +120,5 @@ data class CoinInfoDto(
     val totalTopTierVolume24HourTo: String?,
     @SerializedName("IMAGEURL")
     @Expose
-    val imageUrl: String?
+    val imageUrl: String?,
 )
