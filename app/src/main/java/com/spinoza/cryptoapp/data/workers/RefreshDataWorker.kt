@@ -4,17 +4,18 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
-import com.spinoza.cryptoapp.data.database.AppDataBase
+import com.spinoza.cryptoapp.data.database.CoinInfoDao
 import com.spinoza.cryptoapp.data.mapper.CoinMapper
-import com.spinoza.cryptoapp.data.network.ApiFactory
+import com.spinoza.cryptoapp.data.network.ApiService
 import kotlinx.coroutines.delay
 
-class RefreshDataWorker(context: Context, workerParameters: WorkerParameters) :
-    CoroutineWorker(context, workerParameters) {
-
-    private val coinInfoDao = AppDataBase.getInstance(context).coinInfoDao()
-    private val apiService = ApiFactory.apiService
-    private val mapper = CoinMapper()
+class RefreshDataWorker(
+    context: Context,
+    workerParameters: WorkerParameters,
+    private val coinInfoDao: CoinInfoDao,
+    private val apiService: ApiService,
+    private val mapper: CoinMapper,
+) : CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
         while (true) {
@@ -29,6 +30,7 @@ class RefreshDataWorker(context: Context, workerParameters: WorkerParameters) :
                 }
                 coinInfoDao.insertPriceList(dbModelList)
             } catch (e: Exception) {
+                // do nothing
             }
             delay(UPDATE_INTERVAL_MILLIS)
         }
