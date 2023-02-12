@@ -5,12 +5,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.spinoza.cryptoapp.R
-import com.spinoza.cryptoapp.data.repository.CoinRepositoryImpl
 import com.spinoza.cryptoapp.databinding.ActivityCoinPriceListBinding
 import com.spinoza.cryptoapp.presentation.adapter.CoinInfoAdapter
 import com.spinoza.cryptoapp.presentation.fragment.CoinDetailFragment
 import com.spinoza.cryptoapp.presentation.model.CoinViewModel
 import com.spinoza.cryptoapp.presentation.model.CoinViewModelFactory
+import javax.inject.Inject
 
 class CoinPriceListActivity : AppCompatActivity() {
 
@@ -20,8 +20,16 @@ class CoinPriceListActivity : AppCompatActivity() {
         ActivityCoinPriceListBinding.inflate(layoutInflater)
     }
 
+    @Inject
+    lateinit var viewModelFactory: CoinViewModelFactory
+
+    private val component by lazy {
+        (application as CoinApp).component
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
+
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
@@ -37,10 +45,7 @@ class CoinPriceListActivity : AppCompatActivity() {
         binding.recyclerViewCoinPriceList.adapter = adapter
         binding.recyclerViewCoinPriceList.itemAnimator = null
 
-        viewModel = ViewModelProvider(
-            this,
-            CoinViewModelFactory(CoinRepositoryImpl(application))
-        )[CoinViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory)[CoinViewModel::class.java]
 
         viewModel.coinInfoList.observe(this) { adapter.submitList(it) }
         viewModel.error.observe(this) {
