@@ -3,15 +3,16 @@ package com.spinoza.cryptoapp.presentation.model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.spinoza.cryptoapp.domain.CoinRepository
 import com.spinoza.cryptoapp.domain.usecases.GetCoinInfoListUseCase
 import com.spinoza.cryptoapp.domain.usecases.GetCoinInfoUseCase
 import com.spinoza.cryptoapp.domain.usecases.LoadDataUseCase
+import javax.inject.Inject
 
-class CoinViewModel(repository: CoinRepository) : ViewModel() {
-    private val getCoinInfoListUseCase = GetCoinInfoListUseCase(repository)
-    private val getCoinInfoUseCase = GetCoinInfoUseCase(repository)
-    private val loadDataUseCase = LoadDataUseCase(repository)
+class CoinViewModel @Inject constructor(
+    getCoinInfoListUseCase: GetCoinInfoListUseCase,
+    private val getCoinInfoUseCase: GetCoinInfoUseCase,
+    loadDataUseCase: LoadDataUseCase,
+) : ViewModel() {
 
     val coinInfoList = getCoinInfoListUseCase()
 
